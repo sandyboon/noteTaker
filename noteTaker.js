@@ -22,9 +22,16 @@ noteTaker.getNotes = async function () {
 noteTaker.getCurrentMaxId = async function () {
   console.log('called');
   let currentNotes = await this.getNotes();
-  console.log('cuuren Notes: ' + currentNotes);
   console.log(currentNotes);
-  return currentNotes.length;
+  if (currentNotes.length === 0) {
+    return currentNotes.length;
+  }
+  //sort by id in descendnig order
+  currentNotes.sort((a, b) => {
+    return b.id - a.id;
+  });
+  console.log(currentNotes);
+  return currentNotes[0].id; //return the largest id
 };
 
 /**
@@ -36,13 +43,25 @@ noteTaker.saveNote = async function (note) {
   //first read the existing data
   let notesBeforeUpdate = await this.getNotes();
   if (!note.hasOwnProperty('id')) {
-    idProducer.setInitialId(notesBeforeUpdate.length);
+    idProducer.setInitialId(await noteTaker.getCurrentMaxId());
     note.id = idProducer.getNextId();
     console.log('Getting new id ...' + note.id);
   }
   notesBeforeUpdate.push(note);
+  //write the updates notes JSON to file
   await writeFilePromise('db/db.json', JSON.stringify(notesBeforeUpdate));
   return note;
+};
+
+noteTaker.deleteNote = async function (noteId) {
+  //first read the existing data
+  let notesBeforeDelete = await this.getNotes();
+  notesBeforeDelete.splice(
+    notesBeforeDelete.findIndex((i) => i == noteId),
+    1
+  );
+  await writeFilePromise('db/db.json', JSON.stringify(notesBeforeDelete));
+  return;
 };
 
 module.exports = noteTaker;

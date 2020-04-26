@@ -23,4 +23,10 @@ apiRouter.post('/api/notes', async function (req, res) {
   res.json(savedNote);
 });
 
+apiRouter.delete('/api/notes/:id', async function (req, res) {
+  const id = req.params.id;
+  await noteTaker.deleteNote(id);
+  res.sendStatus(200);
+});
+
 module.exports = apiRouter;
