@@ -6,11 +6,7 @@ const mainRouter = express.Router();
 
 /** Define all the main routes in this file */
 const logger = function (req, res, next) {
-  console.log(
-    `${moment()} Recieved request for path : ${
-      req.originalUrl
-    } for HTTP method: ${req.method}`
-  );
+  logRequest(req);
   next();
 };
 //use a simple logging mechanism. This can be exanded later on..
@@ -33,5 +29,15 @@ mainRouter.get('*', function (req, res) {
   console.log('Serving index.html');
   res.sendFile(path.join(__dirname, '../public/index.html'));
 });
+
+function logRequest(req) {
+  console.log(
+    `${moment()
+      .local()
+      .format('YYYY-MM-DD HH:mm:ss')} Recieved request for path : ${
+      req.originalUrl
+    } for HTTP method: ${req.method}`
+  );
+}
 
 module.exports = mainRouter;
