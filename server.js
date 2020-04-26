@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 
 //exports from application
-const mainRouter = require('./mainRouter');
+const mainRouter = require('./controllers/mainRouter');
 
 const PORT = process.env.PORT || 3000;
 const app = express();
